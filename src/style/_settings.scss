@@ -1,8 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:wght@100;200;300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600&display=swap');
 *{
     font-family: "Poppins";
+    //font-family: 'Birthstone', cursive;
 }
-
+#Checkmat235e h2{
+    font-family: "Birthstone", cursive;
+    color: white;
+    letter-spacing: 6px;
+    font-size: 3em;
+    font-weight: 100;
+    text-align: center;
+}
+.none{
+    display: none;
+}
 body{
     margin: 0;
     padding: 0;
@@ -199,4 +211,11 @@ body{
     bottom: -28px;
     color: #6d6a69;
     transform: translateX(-50%);
+}
+a{
+    color: deeppink;
+    text-decoration: none;
+}
+.magicBorderRedSpeHoverable:hover{
+    cursor: pointer;
 }

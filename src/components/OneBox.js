@@ -19,10 +19,10 @@ const OneBox = ({
     setColorTurn,
     whitePackage,
     setwhitePackage,
+    setIsInChessMate,
     blackPackage,
     setBlackPackage
 }) => {
-
 
     let theColorOne = "#92897e"
     let theColorTwo = "#ada295"
@@ -35,6 +35,7 @@ const OneBox = ({
         theColorTwo = "#ada295"
     }
 
+    let theKingIsInDanger = false;
 
     const onClickInPiece = (e) => {
         let myCol = bORw === "b" ? "black" : "white"
@@ -75,28 +76,26 @@ const OneBox = ({
         }
 
     }
-
-
     const onClickInBox = (e) => {
-        let theKingIsInDanger = false;
 
         const kings = document.querySelectorAll(".oneBox .king")
 
         const target = e.target.parentElement
         const anotherTarget = e.target.parentElement.parentElement.parentElement
 
-        if (ThePionSelected.id) {
+        const realTarget = target.classList[0] === "oneBox" ? target : anotherTarget.classList[0] === "oneBox" && anotherTarget;
+        if (ThePionSelected.id && (realTarget.classList[1] === "magicBorder" || realTarget.classList[1] === "magicBorderRed")) {
+            setIsInChessMate(false)
             if (ThePionSelected.type === "king") {
                 kings.forEach(() => {
                     let kingY = target.classList[0] === "oneBox" ? Math.floor(target.id.split("")[2]) : anotherTarget.classList[0] === "oneBox" && Math.floor(anotherTarget.id.split("")[2])
                     let kingX = target.classList[0] === "oneBox" ? Math.floor(target.id.split("")[3]) : anotherTarget.classList[0] === "oneBox" && Math.floor(anotherTarget.id.split("")[3])
 
-                    const isItInMyReach = target.classList[0] === "oneBox" ? target.classList[1] === "magicBorder" : anotherTarget.classList[0] === "oneBox" && anotherTarget.classList[1] === "magicBorder";
 
                     const lineSpe = document.getElementById(`lnh${kingY-1}`)
                     const lineSpeTwo = document.getElementById(`lnh${kingY+1}`)
 
-                    if (isItInMyReach) {
+                    if (true) {
                         //dans le cas du pion
                         if (ThePionSelected.color === "white") {
                             for (let index = 0; index < 8; index++) {
@@ -108,7 +107,7 @@ const OneBox = ({
                                             //("danger detecté")
                                             //(lineSpe.children[0].children[index])
                                             theKingIsInDanger = true
-
+                                            setIsInChessMate(true)
                                             lineSpe.children[0].children[index].classList.add("magicBorderRedSpe")
                                         }
                                     }
@@ -123,7 +122,7 @@ const OneBox = ({
                                         if (lineSpeTwo.children[0].children[index].children[0].children[0].classList[2] + "" !== ThePionSelected.color + "") {
                                             //(lineSpeTwo.children[0].children[index])
                                             theKingIsInDanger = true
-
+                                            setIsInChessMate(true)
                                             lineSpeTwo.children[0].children[index].classList.add("magicBorderRedSpe")
                                         }
                                     }
@@ -187,10 +186,10 @@ const OneBox = ({
                                         theBox.classList.add("magicBorderRedSpe")
                                     }
                                 }
-                                if(theBox.id!==ThePionSelected.id){
+                                if (theBox.id !== ThePionSelected.id) {
                                     //("mafihach")
                                     weCanOne = false;
-                                }     
+                                }
                             }
                         }
                         for (let index = kingY - 1; index > 0; index--) {
@@ -204,10 +203,10 @@ const OneBox = ({
                                         theBox.classList.add("magicBorderRedSpe")
                                     }
                                 }
-                                if(theBox.id!==ThePionSelected.id){
+                                if (theBox.id !== ThePionSelected.id) {
                                     //("mafihach")
                                     weCanTwo = false;
-                                }                                
+                                }
                             }
                         }
                         for (let index = kingY + 1; index <= 8; index++) {
@@ -221,7 +220,7 @@ const OneBox = ({
                                         theBox.classList.add("magicBorderRedSpe")
                                     }
                                 }
-                                if(theBox.id!==ThePionSelected.id){
+                                if (theBox.id !== ThePionSelected.id) {
                                     //("mafihach")
                                     weCanThree = false;
                                 }
@@ -238,7 +237,7 @@ const OneBox = ({
                                         theBox.classList.add("magicBorderRedSpe")
                                     }
                                 }
-                                if(theBox.id!==ThePionSelected.id){
+                                if (theBox.id !== ThePionSelected.id) {
                                     //("mafihach")
                                     weCanFour = false;
                                 }
@@ -264,26 +263,35 @@ const OneBox = ({
                             if (allLines[index].children[0].children[kingX - 1].children[0].children[0] && weCanOneCastle) {
                                 if (allLines[index].children[0].children[kingX - 1].children[0].children[0].classList[1] === "castle" || allLines[index].children[0].children[kingX - 1].children[0].children[0].classList[1] === "queen") {
                                     if (allLines[index].children[0].children[kingX - 1].children[0].children[0].classList[2] + "" !== ThePionSelected.color + "") {
-                                        theKingIsInDanger = true
-                                        allLines[index].children[0].children[kingX - 1].classList.add("magicBorderRedSpe")
+                                        if(allLines[index].children[0].children[kingX - 1].id+""!==realTarget.id){
+                                            theKingIsInDanger = true
+                                            allLines[index].children[0].children[kingX - 1].classList.add("magicBorderRedSpe")
+                                        }else{
+                                            console.log("ooh c'est drole c le meme id")
+                                        }
+                             
                                     }
                                 }
-                                if(allLines[index].children[0].children[kingX - 1].id!==ThePionSelected.id){
+                                if (allLines[index].children[0].children[kingX - 1].id !== ThePionSelected.id) {
                                     //("mafihach")
                                     weCanOneCastle = false;
                                 }
-                            
+
                             }
                         }
                         for (let index = mineYSofisticatedToHigh - 1; index >= 0; index--) {
                             if (allLines[index].children[0].children[kingX - 1].children[0].children[0] && weCanTwoCastle) {
                                 if (allLines[index].children[0].children[kingX - 1].children[0].children[0].classList[1] === "castle" || allLines[index].children[0].children[kingX - 1].children[0].children[0].classList[1] === "queen") {
                                     if (allLines[index].children[0].children[kingX - 1].children[0].children[0].classList[2] + "" !== ThePionSelected.color + "") {
-                                        theKingIsInDanger = true
-                                        allLines[index].children[0].children[kingX - 1].classList.add("magicBorderRedSpe")
+                                        if(allLines[index].children[0].children[kingX - 1].id+""!==realTarget.id){
+                                            theKingIsInDanger = true
+                                            allLines[index].children[0].children[kingX - 1].classList.add("magicBorderRedSpe")
+                                        }else{
+                                            console.log("ooh c'est drole c le meme id")
+                                        }
                                     }
                                 }
-                                if(allLines[index].children[0].children[kingX - 1].id!==ThePionSelected.id){
+                                if (allLines[index].children[0].children[kingX - 1].id !== ThePionSelected.id) {
                                     //("mafihach")
                                     weCanTwoCastle = false;
                                 }
@@ -293,10 +301,14 @@ const OneBox = ({
                             const theBox = allLines[mineYSofisticatedToHigh].children[0].children[index]
                             if (theBox.children[0].children[0] && weCanThreeCastle) {
                                 if ((theBox.children[0].children[0].classList[1] + "" === "castle" || theBox.children[0].children[0].classList[1] + "" === "queen") && theBox.children[0].children[0].classList[2] + "" !== ThePionSelected.color + "") {
-                                    theKingIsInDanger = true
-                                    theBox.classList.add("magicBorderRedSpe")
+                                    if(theBox.id+""!==realTarget.id){
+                                        theKingIsInDanger = true
+                                        theBox.classList.add("magicBorderRedSpe")
+                                    }else{
+                                        console.log("ooh c'est drole c le meme id")
+                                    }
                                 }
-                                if(theBox.id!==ThePionSelected.id){
+                                if (theBox.id !== ThePionSelected.id) {
                                     //("mafiha2112ch")
                                     weCanThreeCastle = false;
                                 }
@@ -308,10 +320,14 @@ const OneBox = ({
                             if (theBox.children[0].children[0] && weCanFourCastle) {
                                 //(theBox)
                                 if ((theBox.children[0].children[0].classList[1] + "" === "castle" || theBox.children[0].children[0].classList[1] + "" === "queen") && theBox.children[0].children[0].classList[2] + "" !== ThePionSelected.color + "") {
-                                    theKingIsInDanger = true
-                                    theBox.classList.add("magicBorderRedSpe")
+                                    if(theBox.id+""!==realTarget.id){
+                                        theKingIsInDanger = true
+                                        theBox.classList.add("magicBorderRedSpe")
+                                    }else{
+                                        console.log("ooh c'est drole c le meme id")
+                                    }
                                 }
-                                if(theBox.id!==ThePionSelected.id){
+                                if (theBox.id !== ThePionSelected.id) {
                                     //("mafih4141ach")
                                     weCanFourCastle = false;
                                 }
@@ -319,21 +335,21 @@ const OneBox = ({
                         }
 
                         //dans le cas ou c'est l'autre roi
-                        const getOneBox = (id,childIndex) => {
-                            if(document.getElementById(id)){
+                        const getOneBox = (id, childIndex) => {
+                            if (document.getElementById(id)) {
                                 return document.getElementById(id).children[0].children[childIndex]
-                            }else{
+                            } else {
                                 return null;
                             }
                         }
 
-                        const allPotontielBoxs = [getOneBox(`lnh${kingY}`,kingX-2),getOneBox(`lnh${kingY}`,kingX),getOneBox(`lnh${kingY-1}`,kingX-1),getOneBox(`lnh${kingY-1}`,kingX-2),getOneBox(`lnh${kingY-1}`,kingX),getOneBox(`lnh${kingY+1}`,kingX-2),getOneBox(`lnh${kingY+1}`,kingX),getOneBox(`lnh${kingY+1}`,kingX-1)]
+                        const allPotontielBoxs = [getOneBox(`lnh${kingY}`, kingX - 2), getOneBox(`lnh${kingY}`, kingX), getOneBox(`lnh${kingY-1}`, kingX - 1), getOneBox(`lnh${kingY-1}`, kingX - 2), getOneBox(`lnh${kingY-1}`, kingX), getOneBox(`lnh${kingY+1}`, kingX - 2), getOneBox(`lnh${kingY+1}`, kingX), getOneBox(`lnh${kingY+1}`, kingX - 1)]
 
                         //(allPotontielBoxs)
 
-                        allPotontielBoxs.forEach(pot=>{
-                            if(pot&&pot.children[0]&&pot.children[0].children[0]){
-                                if(pot.children[0].children[0].classList[1]==="king"&&pot.children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
+                        allPotontielBoxs.forEach(pot => {
+                            if (pot && pot.children[0] && pot.children[0].children[0]) {
+                                if (pot.children[0].children[0].classList[1] === "king" && pot.children[0].children[0].classList[2] + "" !== ThePionSelected.color + "") {
                                     theKingIsInDanger = true
                                     pot.classList.add("magicBorderRedSpe")
                                 }
@@ -341,7 +357,7 @@ const OneBox = ({
                         })
                     }
 
-                    
+
                 })
             } else {
                 const kings = document.querySelectorAll(".oneBox .king")
@@ -350,13 +366,11 @@ const OneBox = ({
                     allThings.push(document.getElementById(`lnh${index}`))
                 }
 
-                const realTarget = target.classList[0] === "oneBox" ? target : anotherTarget.classList[0] === "oneBox" && anotherTarget;
-
-                kings.forEach(king=>{
+                kings.forEach(king => {
                     const kingX = Math.floor(king.parentElement.parentElement.id.split("")[3])
                     const kingY = Math.floor(king.parentElement.parentElement.id.split("")[2])
 
-                    if(ThePionSelected.color+""===king.classList[2]+""){
+                    if (ThePionSelected.color + "" === king.classList[2] + "") {
                         //detection d'eventuel fou ou reine dangereux.se
 
                         let varKingY = kingY;
@@ -368,22 +382,22 @@ const OneBox = ({
                         let crazyCanTwo = true;
                         let crazyCanThree = true;
                         let crazyCanFour = true;
-                        
+
                         for (let index = kingX; index < 8; index++) {
-                            if(crazyCanOne){
-                                varKingY+=1
+                            if (crazyCanOne) {
+                                varKingY += 1
                                 const theLineWhereTheKingIs = document.getElementById(`lnh${varKingY}`)
-    
-                                if(theLineWhereTheKingIs&&theLineWhereTheKingIs.children[0]&&theLineWhereTheKingIs.children[0].children[index]){
+
+                                if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
                                     //(theLineWhereTheKingIs.children[0].children[index])
                                     //si il y'a une piece
-                                    if(theLineWhereTheKingIs.children[0].children[index].children[0]&&theLineWhereTheKingIs.children[0].children[index].children[0].children[0]){
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
                                         //(theLineWhereTheKingIs.children[0].children[index].children[0].children[0])
-                                        
+
                                         //si ce n'est pas le pion selectioné
-                                        if(theLineWhereTheKingIs.children[0].children[index].id+""!==ThePionSelected.id+""){
+                                        if (theLineWhereTheKingIs.children[0].children[index].id + "" !== ThePionSelected.id + "") {
                                             //verifie si la couleur de la piece est diffirente de celle du roi
-                                            if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2]+""!==king.classList[2]+""){
+                                            if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
                                                 //si la target n'est pas entre le roi et la piece dangeureuse
                                                 //(theLineWhereTheKingIs.children[0].children[index])
                                                 //(realTarget)
@@ -394,28 +408,28 @@ const OneBox = ({
                                                 const actualX = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[3])
                                                 const actualY = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[2])
 
-                                                if(theLineWhereTheKingIs.children[0].children[index].id+""===realTarget.id+""||Math.abs(realTargetX-actualX)===Math.abs(realTargetY-actualY)){
+                                                if (theLineWhereTheKingIs.children[0].children[index].id + "" === realTarget.id + "" || Math.abs(realTargetX - actualX) === Math.abs(realTargetY - actualY)) {
                                                     //("il est entre youpi")
                                                     crazyCanOne = false;
-                                                }else{
+                                                } else {
                                                     //on verifie si la piece est un fou ou une reine
-                                                    if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="crazy"||theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="queen"){
+                                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
                                                         theKingIsInDanger = true;
                                                         crazyCanOne = false;
                                                         //("le roi est en danger")
                                                         theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
-                                                    }else{
+                                                    } else {
                                                         //("le roi n'est pas en danger")
                                                         crazyCanOne = false;
                                                     }
                                                 }
 
-                                               
-                                            }else{
+
+                                            } else {
                                                 //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
                                                 crazyCanOne = false;
                                             }
-                                        }else{
+                                        } else {
                                             //("c'est le pion selectioné")
                                         }
                                     }
@@ -423,22 +437,22 @@ const OneBox = ({
                             }
                         }
                         for (let index = kingX; index < 8; index++) {
-                            if(crazyCanTwo){
-                                varKingYTwo-=1
+                            if (crazyCanTwo) {
+                                varKingYTwo -= 1
                                 const theLineWhereTheKingIs = document.getElementById(`lnh${varKingYTwo}`)
-    
-                                if(theLineWhereTheKingIs&&theLineWhereTheKingIs.children[0]&&theLineWhereTheKingIs.children[0].children[index]){
+
+                                if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
                                     //(theLineWhereTheKingIs.children[0].children[index])
                                     //si il y'a une piece
-                                    if(theLineWhereTheKingIs.children[0].children[index].children[0]&&theLineWhereTheKingIs.children[0].children[index].children[0].children[0]){
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
                                         //(theLineWhereTheKingIs.children[0].children[index].children[0].children[0])
-                                        
+
                                         //si ce n'est pas le pion selectioné
-                                        if(theLineWhereTheKingIs.children[0].children[index].id+""!==ThePionSelected.id+""){
+                                        if (theLineWhereTheKingIs.children[0].children[index].id + "" !== ThePionSelected.id + "") {
                                             //verifie si la couleur de la piece est diffirente de celle du roi
-                                            if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2]+""!==king.classList[2]+""){
+                                            if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
                                                 //si la target n'est pas entre le roi et la piece dangeureuse
-                                        
+
 
                                                 const realTargetX = Math.floor(realTarget.id.split("")[3])
                                                 const realTargetY = Math.floor(realTarget.id.split("")[2])
@@ -446,50 +460,50 @@ const OneBox = ({
                                                 const actualX = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[3])
                                                 const actualY = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[2])
 
-                                                if(theLineWhereTheKingIs.children[0].children[index].id+""===realTarget.id+""||Math.abs(realTargetX-actualX)===Math.abs(realTargetY-actualY)){
+                                                if (theLineWhereTheKingIs.children[0].children[index].id + "" === realTarget.id + "" || Math.abs(realTargetX - actualX) === Math.abs(realTargetY - actualY)) {
                                                     //("il est entre youpi")
                                                     crazyCanTwo = false;
-                                                }else{
+                                                } else {
                                                     //on verifie si la piece est un fou ou une reine
-                                                    if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="crazy"||theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="queen"){
+                                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
                                                         theKingIsInDanger = true;
                                                         crazyCanTwo = false;
                                                         //("le roi est en danger")
                                                         theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
-                                                    }else{
+                                                    } else {
                                                         //("le roi n'est pas en danger")
                                                         crazyCanTwo = false;
                                                     }
                                                 }
 
-                                               
-                                            }else{
+
+                                            } else {
                                                 //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
                                                 crazyCanTwo = false;
                                             }
-                                        }else{
+                                        } else {
                                             //("c'est le pion selectioné")
                                         }
                                     }
                                 }
                             }
-                    
+
                         }
-                        for (let index = kingX-2; index >= 0; index--) {
-                            if(crazyCanThree){
-                                varKingYThree-=1
+                        for (let index = kingX - 2; index >= 0; index--) {
+                            if (crazyCanThree) {
+                                varKingYThree -= 1
                                 const theLineWhereTheKingIs = document.getElementById(`lnh${varKingYThree}`)
-    
-                                if(theLineWhereTheKingIs&&theLineWhereTheKingIs.children[0]&&theLineWhereTheKingIs.children[0].children[index]){
+
+                                if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
                                     //(theLineWhereTheKingIs.children[0].children[index])
                                     //si il y'a une piece
-                                    if(theLineWhereTheKingIs.children[0].children[index].children[0]&&theLineWhereTheKingIs.children[0].children[index].children[0].children[0]){
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
                                         //(theLineWhereTheKingIs.children[0].children[index].children[0].children[0])
-                                        
+
                                         //si ce n'est pas le pion selectioné
-                                        if(theLineWhereTheKingIs.children[0].children[index].id+""!==ThePionSelected.id+""){
+                                        if (theLineWhereTheKingIs.children[0].children[index].id + "" !== ThePionSelected.id + "") {
                                             //verifie si la couleur de la piece est diffirente de celle du roi
-                                            if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2]+""!==king.classList[2]+""){
+                                            if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
                                                 //si la target n'est pas entre le roi et la piece dangeureuse
                                                 //(theLineWhereTheKingIs.children[0].children[index])
                                                 //(realTarget)
@@ -500,50 +514,50 @@ const OneBox = ({
                                                 const actualX = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[3])
                                                 const actualY = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[2])
 
-                                                if(theLineWhereTheKingIs.children[0].children[index].id+""===realTarget.id+""||Math.abs(realTargetX-actualX)===Math.abs(realTargetY-actualY)){
+                                                if (theLineWhereTheKingIs.children[0].children[index].id + "" === realTarget.id + "" || Math.abs(realTargetX - actualX) === Math.abs(realTargetY - actualY)) {
                                                     //("il est entre youpi")
                                                     crazyCanThree = false;
-                                                }else{
+                                                } else {
                                                     //on verifie si la piece est un fou ou une reine
-                                                    if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="crazy"||theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="queen"){
+                                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
                                                         theKingIsInDanger = true;
                                                         crazyCanThree = false;
                                                         //("le roi est en danger")
                                                         theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
-                                                    }else{
+                                                    } else {
                                                         //("le roi n'est pas en danger")
                                                         crazyCanThree = false;
                                                     }
                                                 }
 
-                                               
-                                            }else{
+
+                                            } else {
                                                 crazyCanThree = false;
                                                 //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
                                             }
-                                        }else{
+                                        } else {
                                             //("c'est le pion selectioné")
                                         }
                                     }
                                 }
                             }
-                    
+
                         }
-                        for (let index = kingX-2; index >= 0; index--) {
-                            if(crazyCanFour){
-                                varKingYFour+=1
+                        for (let index = kingX - 2; index >= 0; index--) {
+                            if (crazyCanFour) {
+                                varKingYFour += 1
                                 const theLineWhereTheKingIs = document.getElementById(`lnh${varKingYFour}`)
-    
-                                if(theLineWhereTheKingIs&&theLineWhereTheKingIs.children[0]&&theLineWhereTheKingIs.children[0].children[index]){
+
+                                if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
                                     //(theLineWhereTheKingIs.children[0].children[index])
                                     //si il y'a une piece
-                                    if(theLineWhereTheKingIs.children[0].children[index].children[0]&&theLineWhereTheKingIs.children[0].children[index].children[0].children[0]){
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
                                         //(theLineWhereTheKingIs.children[0].children[index].children[0].children[0])
-                                        
+
                                         //si ce n'est pas le pion selectioné
-                                        if(theLineWhereTheKingIs.children[0].children[index].id+""!==ThePionSelected.id+""){
+                                        if (theLineWhereTheKingIs.children[0].children[index].id + "" !== ThePionSelected.id + "") {
                                             //verifie si la couleur de la piece est diffirente de celle du roi
-                                            if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2]+""!==king.classList[2]+""){
+                                            if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
                                                 //si la target n'est pas entre le roi et la piece dangeureuse
                                                 //(theLineWhereTheKingIs.children[0].children[index])
                                                 //(realTarget)
@@ -554,75 +568,77 @@ const OneBox = ({
                                                 const actualX = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[3])
                                                 const actualY = Math.floor(theLineWhereTheKingIs.children[0].children[index].id.split("")[2])
 
-                                                if(theLineWhereTheKingIs.children[0].children[index].id+""===realTarget.id+""||Math.abs(realTargetX-actualX)===Math.abs(realTargetY-actualY)){
+                                                if (theLineWhereTheKingIs.children[0].children[index].id + "" === realTarget.id + "" || Math.abs(realTargetX - actualX) === Math.abs(realTargetY - actualY)) {
                                                     //("il est entre youpi")
                                                     crazyCanFour = false;
-                                                }else{
+                                                } else {
                                                     //on verifie si la piece est un fou ou une reine
-                                                    if(theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="crazy"||theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1]==="queen"){
+                                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
                                                         theKingIsInDanger = true;
                                                         crazyCanFour = false;
                                                         //("le roi est en danger")
                                                         theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
-                                                    }else{
+                                                    } else {
                                                         //("le roi n'est pas en danger")
                                                         crazyCanFour = false;
                                                     }
                                                 }
 
-                                               
-                                            }else{
+
+                                            } else {
                                                 //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
                                                 crazyCanFour = false;
                                             }
-                                        }else{
+                                        } else {
                                             //("c'est le pion selectioné")
                                         }
                                     }
                                 }
                             }
-                    
+
                         }
 
                         //detection d'eventuels pions dangereux
                         const realKing = king.parentElement.parentElement
 
-               
+
 
                         const verifyIfAnyPionIsDangerous = (indexToAdd) => {
                             const potontialDangerousLine = document.getElementById(`lnh${Math.floor(realKing.id.split("")[2])-indexToAdd}`);
 
-                            const potontialDangerousPionOne = potontialDangerousLine.children[0].children[kingX-2]
+                            const potontialDangerousPionOne = potontialDangerousLine.children[0].children[kingX - 2]
                             const potontialDangerousPionTwo = potontialDangerousLine.children[0].children[kingX]
 
                             //(potontialDangerousLine)
                             //si un des potontiel box dangereux possede un fils c'est a dire une piece
-                            if(potontialDangerousPionOne.children[0].children[0]){
+                            if (potontialDangerousPionOne.children[0].children[0]) {
                                 //si cette piece est de type pion
-                                if(potontialDangerousPionOne.children[0].children[0].classList[1]==="pion"){
+                                if (potontialDangerousPionOne.children[0].children[0].classList[1] === "pion") {
                                     //si le pion est de couleur diffirente que le roi
-                                    if(potontialDangerousPionOne.children[0].children[0].classList[2]+""!==king.classList[2]+""){
+                                    if (potontialDangerousPionOne.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
                                         //(potontialDangerousPionOne.children[0].children[0].classList[2])
                                         //(king.classList[2]);
                                         //si la destination de la piece selectioné n'est pas la position actuel de la piece dangereuse
-                                        if(realTarget.id+""!==potontialDangerousPionOne.id+""){
+                                        if (realTarget.id + "" !== potontialDangerousPionOne.id + "") {
                                             //("le roi est en danger bordel")
                                             theKingIsInDanger = true
+                                            setIsInChessMate(true)
                                             potontialDangerousPionOne.classList.add("magicBorderRedSpe")
                                         }
 
                                     }
                                 }
+
                             }
-                            if(potontialDangerousPionTwo.children[0].children[0]){
+                            if (potontialDangerousPionTwo.children[0].children[0]) {
                                 //si cette piece est de type pion
-                                if(potontialDangerousPionTwo.children[0].children[0].classList[1]==="pion"){
+                                if (potontialDangerousPionTwo.children[0].children[0].classList[1] === "pion") {
                                     //si le pion est de couleur diffirente que le roi
-                                    if(potontialDangerousPionTwo.children[0].children[0].classList[2]+""!==king.classList[2]+""){
+                                    if (potontialDangerousPionTwo.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
                                         //(potontialDangerousPionTwo.children[0].children[0].classList[2])
                                         //(king.classList[2]);
                                         //si la destination de la piece selectioné n'est pas la position actuel de la piece dangereuse
-                                        if(realTarget.id+""!==potontialDangerousPionTwo.id+""){
+                                        if (realTarget.id + "" !== potontialDangerousPionTwo.id + "") {
                                             //("le roi est en danger bordel")
                                             theKingIsInDanger = true
                                             potontialDangerousPionTwo.classList.add("magicBorderRedSpe")
@@ -633,10 +649,10 @@ const OneBox = ({
                             }
                         }
 
-                        if(ThePionSelected.color==="black"){
+                        if (ThePionSelected.color === "black") {
                             verifyIfAnyPionIsDangerous(-1)
 
-                        }else if(ThePionSelected.color==="white"){
+                        } else if (ThePionSelected.color === "white") {
                             verifyIfAnyPionIsDangerous(1)
                         }
 
@@ -647,148 +663,148 @@ const OneBox = ({
                         let castleCanThree = true;
                         let castleCanFour = true;
 
-                        for (let index = kingY+1; index <= 8; index++) {
-                            const thePotPiece = document.getElementById(`lnh${index}`).children[0].children[kingX-1]
-                            
+                        for (let index = kingY + 1; index <= 8; index++) {
+                            const thePotPiece = document.getElementById(`lnh${index}`).children[0].children[kingX - 1]
+
                             //si la piece a réelement une piece 
-                            if(castleCanOne&&thePotPiece.children[0].children[0]){
+                            if (castleCanOne && thePotPiece.children[0].children[0]) {
                                 //si elle a une couleur difirente
-                                if(thePotPiece.children[0].children[0].classList[2]+""!==king.classList[2]+""){
-                                    
-                                     //si c'est le chateaux ou la reine
-                                     if(thePotPiece.children[0].children[0].classList[1]==="castle"||thePotPiece.children[0].children[0].classList[1]==="queen"){
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
                                         //si la destination est safe
 
                                         const castleY = thePotPiece.id.split("")[2];
                                         const realKingY = realKing.id.split("")[2];
                                         const realTargetY = realTarget.id.split("")[2];
 
-                                        if(Math.floor(realTarget.id.split("")[3])===kingX&&(realTargetY<castleY&&realTargetY>realKingY)){
+                                        if (Math.floor(realTarget.id.split("")[3]) === kingX && (realTargetY < castleY && realTargetY > realKingY)) {
                                             castleCanOne = false;
-                                        }else{
+                                        } else {
                                             theKingIsInDanger = true
                                             castleCanOne = false;
                                             thePotPiece.classList.add("magicBorderRedSpe")
                                         }
-                                    }else{
+                                    } else {
                                         castleCanOne = false;
                                     }
-                                }else{
+                                } else {
                                     //si c'est le pion selectioné
-                                    if(thePotPiece.id+""===ThePionSelected.id+""){
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
                                         //("c'est le pion selectioné donc...")
-                                    }else{
+                                    } else {
                                         castleCanOne = false;
                                     }
-                             
+
                                 }
                             }
                         }
-                        for (let index = kingY-1; index > 0; index--) {
-                            const thePotPiece = document.getElementById(`lnh${index}`).children[0].children[kingX-1]
-                            
+                        for (let index = kingY - 1; index > 0; index--) {
+                            const thePotPiece = document.getElementById(`lnh${index}`).children[0].children[kingX - 1]
+
                             //si la piece a réelement une piece 
-                            if(castleCanTwo&&thePotPiece.children[0].children[0]){
+                            if (castleCanTwo && thePotPiece.children[0].children[0]) {
                                 //si elle a une couleur difirente
-                                if(thePotPiece.children[0].children[0].classList[2]+""!==king.classList[2]+""){
-                                    
-                                     //si c'est le chateaux ou la reine
-                                     if(thePotPiece.children[0].children[0].classList[1]==="castle"||thePotPiece.children[0].children[0].classList[1]==="queen"){
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
                                         //si la destination est safe
                                         const castleY = thePotPiece.id.split("")[2];
                                         const realKingY = realKing.id.split("")[2];
                                         const realTargetY = realTarget.id.split("")[2];
 
-                                        if(Math.floor(realTarget.id.split("")[3])===kingX&&(realTargetY>castleY&&realTargetY<realKingY)){
+                                        if (Math.floor(realTarget.id.split("")[3]) === kingX && (realTargetY > castleY && realTargetY < realKingY)) {
                                             //("ca va alors")
                                             castleCanTwo = false;
-                                        }else{
-                                            theKingIsInDanger = true
+                                        } else {
+                                            theKingIsInDanger = true;
                                             castleCanTwo = false;
                                             thePotPiece.classList.add("magicBorderRedSpe")
                                         }
-                                    }else{
+                                    } else {
                                         castleCanTwo = false;
                                     }
-                                }else{
+                                } else {
                                     //si c'est le pion selectioné
-                                    if(thePotPiece.id+""===ThePionSelected.id+""){
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
                                         //("c'est le pion selectioné donc...")
-                                    }else{
+                                    } else {
                                         castleCanTwo = false;
                                     }
-                             
+
                                 }
                             }
                         }
                         for (let index = kingX; index < 8; index++) {
                             const thePotPiece = document.getElementById(`lnh${kingY}`).children[0].children[index]
-                            
+
                             //si la piece a réelement une piece 
-                            if(castleCanThree&&thePotPiece.children[0].children[0]){
+                            if (castleCanThree && thePotPiece.children[0].children[0]) {
                                 //si elle a une couleur difirente
-                                if(thePotPiece.children[0].children[0].classList[2]+""!==king.classList[2]+""){
-                                    
-                                     //si c'est le chateaux ou la reine
-                                     if(thePotPiece.children[0].children[0].classList[1]==="castle"||thePotPiece.children[0].children[0].classList[1]==="queen"){
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
                                         //si la destination est safe
                                         const castleX = thePotPiece.id.split("")[3];
                                         const realKingX = realKing.id.split("")[3];
                                         const realTargetX = realTarget.id.split("")[3];
 
-                                        if(Math.floor(realTarget.id.split("")[2])===kingY&&(realTargetX<castleX&&realTargetX>realKingX)){
+                                        if (Math.floor(realTarget.id.split("")[2]) === kingY && (realTargetX < castleX && realTargetX > realKingX)) {
                                             //("ca va alors")
                                             castleCanThree = false;
-                                        }else{
+                                        } else {
                                             theKingIsInDanger = true
                                             castleCanThree = false;
                                             thePotPiece.classList.add("magicBorderRedSpe")
                                         }
-                                    }else{
+                                    } else {
                                         castleCanThree = false;
                                     }
-                                }else{
+                                } else {
                                     //si c'est le pion selectioné
-                                    if(thePotPiece.id+""===ThePionSelected.id+""){
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
                                         //("c'est le pion selectioné donc...")
-                                    }else{
+                                    } else {
                                         castleCanThree = false;
-                                    }                           
+                                    }
                                 }
                             }
                         }
-                        for (let index = kingX-2; index >= 0; index--) {
+                        for (let index = kingX - 2; index >= 0; index--) {
                             const thePotPiece = document.getElementById(`lnh${kingY}`).children[0].children[index]
-                            
+
                             //si la piece a réelement une piece 
-                            if(castleCanFour&&thePotPiece.children[0].children[0]){
+                            if (castleCanFour && thePotPiece.children[0].children[0]) {
                                 //si elle a une couleur difirente
-                                if(thePotPiece.children[0].children[0].classList[2]+""!==king.classList[2]+""){
-                                    
-                                     //si c'est le chateaux ou la reine
-                                     if(thePotPiece.children[0].children[0].classList[1]==="castle"||thePotPiece.children[0].children[0].classList[1]==="queen"){
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
                                         //si la destination est safe
                                         const castleX = thePotPiece.id.split("")[3];
                                         const realKingX = realKing.id.split("")[3];
                                         const realTargetX = realTarget.id.split("")[3];
-                                        if(Math.floor(realTarget.id.split("")[2])===kingY&&(realTargetX>castleX&&realTargetX<realKingX)){
+                                        if (Math.floor(realTarget.id.split("")[2]) === kingY && (realTargetX > castleX && realTargetX < realKingX)) {
                                             //("ca va alors")
                                             castleCanFour = false;
-                                        }else{
-                                            theKingIsInDanger = true
+                                        } else {
+                                            theKingIsInDanger = true;
                                             castleCanFour = false;
                                             thePotPiece.classList.add("magicBorderRedSpe")
                                         }
-                                    }else{
+                                    } else {
                                         castleCanFour = false;
                                     }
-                                }else{
+                                } else {
                                     //si c'est le pion selectioné
-                                    if(thePotPiece.id+""===ThePionSelected.id+""){
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
                                         //("c'est le pion selectioné donc...")
-                                    }else{
+                                    } else {
                                         castleCanFour = false;
-                                    }                           
+                                    }
                                 }
                             }
                         }
@@ -800,31 +816,31 @@ const OneBox = ({
                         const baseTwo = document.getElementById(`lnh${number-2}`)
                         const baseThree = document.getElementById(`lnh${number+1}`)
                         const baseFour = document.getElementById(`lnh${number+2}`)
-                
-                        //(number)
-                        const potontialElemBorderOne = baseOne&&baseOne.children[0].children[Math.floor(realKing.id.split("")[3])-3]
-                        const potontialElemBorderTwo = baseOne&&baseOne.children[0].children[Math.floor(realKing.id.split("")[3])+1]
-                        const potontialElemBorderThree = baseTwo&&baseTwo.children[0].children[Math.floor(realKing.id.split("")[3])]
-                        const potontialElemBorderFour = baseTwo&&baseTwo.children[0].children[Math.floor(realKing.id.split("")[3])-2]
-                        const potontialElemBorderFive = baseThree&&baseThree.children[0].children[Math.floor(realKing.id.split("")[3])-3]
-                        const potontialElemBorderSix = baseThree&&baseThree.children[0].children[Math.floor(realKing.id.split("")[3])+1]
-                        const potontialElemBorderSeven = baseFour&&baseFour.children[0].children[Math.floor(realKing.id.split("")[3])]
-                        const potontialElemBorderEight = baseFour&&baseFour.children[0].children[Math.floor(realKing.id.split("")[3])-2]
-                       
-                        const AllPotontialElemBorder = [potontialElemBorderOne,potontialElemBorderTwo,potontialElemBorderThree,potontialElemBorderFour,potontialElemBorderFive,potontialElemBorderSix,potontialElemBorderSeven,potontialElemBorderEight]
-                    
 
-                        AllPotontialElemBorder.forEach(peb=>{
+                        //(number)
+                        const potontialElemBorderOne = baseOne && baseOne.children[0].children[Math.floor(realKing.id.split("")[3]) - 3]
+                        const potontialElemBorderTwo = baseOne && baseOne.children[0].children[Math.floor(realKing.id.split("")[3]) + 1]
+                        const potontialElemBorderThree = baseTwo && baseTwo.children[0].children[Math.floor(realKing.id.split("")[3])]
+                        const potontialElemBorderFour = baseTwo && baseTwo.children[0].children[Math.floor(realKing.id.split("")[3]) - 2]
+                        const potontialElemBorderFive = baseThree && baseThree.children[0].children[Math.floor(realKing.id.split("")[3]) - 3]
+                        const potontialElemBorderSix = baseThree && baseThree.children[0].children[Math.floor(realKing.id.split("")[3]) + 1]
+                        const potontialElemBorderSeven = baseFour && baseFour.children[0].children[Math.floor(realKing.id.split("")[3])]
+                        const potontialElemBorderEight = baseFour && baseFour.children[0].children[Math.floor(realKing.id.split("")[3]) - 2]
+
+                        const AllPotontialElemBorder = [potontialElemBorderOne, potontialElemBorderTwo, potontialElemBorderThree, potontialElemBorderFour, potontialElemBorderFive, potontialElemBorderSix, potontialElemBorderSeven, potontialElemBorderEight]
+
+
+                        AllPotontialElemBorder.forEach(peb => {
                             //(peb)
-                            if(peb){
+                            if (peb) {
                                 //si y'a une piece a l'interieur
-                                if(peb.children[0].children[0]){
+                                if (peb.children[0].children[0]) {
                                     //si elle est de la meme couleur que l'actuel roi
-                                    if(peb.children[0].children[0].classList[2]+""!==king.classList[2]+""){
+                                    if (peb.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
                                         //si c'est un rider
-                                        if(peb.children[0].children[0].classList[1]==="rider"){
+                                        if (peb.children[0].children[0].classList[1] === "rider") {
                                             //si la destination n'est pas arrangante
-                                            if(realTarget.id!==peb.id){
+                                            if (realTarget.id !== peb.id) {
                                                 theKingIsInDanger = true;
                                                 //("oula un danger rider")
                                                 peb.classList.add("magicBorderRedSpe")
@@ -834,6 +850,8 @@ const OneBox = ({
                                 }
                             }
                         })
+                    } else {
+
                     }
                 })
             }
@@ -892,26 +910,460 @@ const OneBox = ({
             }
         }
 
-        if(ThePionSelected.id){
+        if (ThePionSelected.id) {
             const blackLine = document.getElementById("lnh8")
             const WhiteLine = document.getElementById("lnh1")
-    
+
             for (let index = 0; index < 8; index++) {
                 //(blackLine.children[0].children[index])
-                if(blackLine.children[0].children[index]&&blackLine.children[0].children[index].children[0].children[0]){
-                    if(blackLine.children[0].children[index].children[0].children[0].classList[1]==="pion"&&blackLine.children[0].children[index].children[0].children[0].classList[2]==="black"){
-                        blackLine.children[0].children[index].children[0].children[0].classList.replace("pion","queen")
+                if (blackLine.children[0].children[index] && blackLine.children[0].children[index].children[0].children[0]) {
+                    if (blackLine.children[0].children[index].children[0].children[0].classList[1] === "pion" && blackLine.children[0].children[index].children[0].children[0].classList[2] === "black") {
+                        blackLine.children[0].children[index].children[0].children[0].classList.replace("pion", "queen")
                         blackLine.children[0].children[index].children[0].children[0].children[0].src = "https://www.mathsisfun.com/games/images/chess/stdbq.png"
                     }
                 }
-                if(WhiteLine.children[0].children[index]&&WhiteLine.children[0].children[index].children[0].children[0]){
-                    if(WhiteLine.children[0].children[index].children[0].children[0].classList[1]==="pion"&&WhiteLine.children[0].children[index].children[0].children[0].classList[2]==="white"){
-                        WhiteLine.children[0].children[index].children[0].children[0].classList.replace("pion","queen")
+                if (WhiteLine.children[0].children[index] && WhiteLine.children[0].children[index].children[0].children[0]) {
+                    if (WhiteLine.children[0].children[index].children[0].children[0].classList[1] === "pion" && WhiteLine.children[0].children[index].children[0].children[0].classList[2] === "white") {
+                        WhiteLine.children[0].children[index].children[0].children[0].classList.replace("pion", "queen")
                         WhiteLine.children[0].children[index].children[0].children[0].children[0].src = "https://www.mathsisfun.com/games/images/chess/stdwq.png"
                     }
                 }
             }
         }
+        kings.forEach(king => {
+            if (ThePionSelected.color + "" !== king.classList[2] + "") {
+                const kingX = Math.floor(king.parentElement.parentElement.id.split("")[3])
+                const kingY = Math.floor(king.parentElement.parentElement.id.split("")[2])
+
+                //detection d'eventuels pions dangereux
+                if(true){
+                    const realKing = king.parentElement.parentElement
+    
+    
+                //(king);
+                const verifyIfAnyPionIsDangerous = (indexToAdd) => {
+                    const potontialDangerousLine = document.getElementById(`lnh${Math.floor(realKing.id.split("")[2])+indexToAdd}`);
+    
+                    const potontialDangerousPionOne = potontialDangerousLine.children[0].children[kingX - 2]
+                    const potontialDangerousPionTwo = potontialDangerousLine.children[0].children[kingX]
+    
+                    //(potontialDangerousLine)
+                    //(potontialDangerousPionOne)
+                    //(potontialDangerousPionTwo)
+    
+                    //(potontialDangerousLine)
+                    //si un des potontiel box dangereux possede un fils c'est a dire une piece
+                    if (potontialDangerousPionOne.children[0].children[0]) {
+                        //si cette piece est de type pion
+                        if (potontialDangerousPionOne.children[0].children[0].classList[1] === "pion") {
+                            //si le pion est de couleur diffirente que le roi
+                            //("ici tou va bien")
+                            if (potontialDangerousPionOne.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+                                //("en check amte toupi")
+                                
+                                setIsInChessMate(true)
+                                setTimeout(() => {
+                                    potontialDangerousPionOne.classList.add("magicBorderRedSpe")
+                                }, 100);
+                            }
+                        }
+    
+                    }
+                    if (potontialDangerousPionTwo.children[0].children[0]) {
+                        //si cette piece est de type pion
+                        if (potontialDangerousPionTwo.children[0].children[0].classList[1] === "pion") {
+                            //si le pion est de couleur diffirente que le roi
+                            if (potontialDangerousPionTwo.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+                          
+                                setIsInChessMate(true)
+
+                                setTimeout(() => {
+                                    potontialDangerousPionTwo.classList.add("magicBorderRedSpe")
+                                }, 100);
+                            }
+                        }
+                    }
+                }
+    
+                if (ThePionSelected.color === "black") {
+                    verifyIfAnyPionIsDangerous(-1)
+    
+                } else if (ThePionSelected.color === "white") {
+                    verifyIfAnyPionIsDangerous(1)
+                }
+                }
+                //detection d'eventuels fou ou reine dangereux
+                if(true){
+                    let varKingY = kingY;
+                    let varKingYTwo = kingY;
+                    let varKingYThree = kingY;
+                    let varKingYFour = kingY;
+
+                    let crazyCanOne = true;
+                    let crazyCanTwo = true;
+                    let crazyCanThree = true;
+                    let crazyCanFour = true;
+
+                    for (let index = kingX; index < 8; index++) {
+                        if (crazyCanOne) {
+                            varKingY += 1
+                            const theLineWhereTheKingIs = document.getElementById(`lnh${varKingY}`)
+
+                            if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
+                                //(theLineWhereTheKingIs.children[0].children[index]);    
+                                if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
+                                    //verifie si la couleur de la piece est diffirente de celle du roi
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+                                        //on verifie si la piece est un fou ou une reine
+                                        if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
+                                            setIsInChessMate(true)
+                                            crazyCanOne = false;
+                                            //("le roi est en echec youpi (enfin je crois)")
+                                            theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
+                                        } else {
+                                            //("le roi n'est pas en danger")
+                                            crazyCanOne = false;
+                                        }
+
+
+                                    } else {
+                                        //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
+                                        crazyCanOne = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (let index = kingX; index < 8; index++) {
+                        if (crazyCanTwo) {
+                            varKingYTwo -= 1
+                            const theLineWhereTheKingIs = document.getElementById(`lnh${varKingYTwo}`)
+
+                            if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
+                                //(theLineWhereTheKingIs.children[0].children[index])
+                                //si il y'a une piece
+                                if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
+                                    //verifie si la couleur de la piece est diffirente de celle du roi
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+                                        //on verifie si la piece est un fou ou une reine
+                                        if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
+                                            crazyCanTwo = false;
+                                            setIsInChessMate(true)
+                                            theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
+                                            //("le roi est en echec youpi (enfin je crois)")
+                                        } else {
+                                            //("le roi n'est pas en danger")
+                                            crazyCanTwo = false;
+                                        }
+
+
+                                    } else {
+                                        //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
+                                        crazyCanTwo = false;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    for (let index = kingX - 2; index >= 0; index--) {
+                        if (crazyCanThree) {
+                            varKingYThree -= 1
+                            const theLineWhereTheKingIs = document.getElementById(`lnh${varKingYThree}`)
+                       
+                            if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
+                                //(theLineWhereTheKingIs.children[0].children[index]);
+                                //(theLineWhereTheKingIs.children[0].children[index])
+                                //si il y'a une piece
+                                if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+                                        //on verifie si la piece est un fou ou une reine
+                                        if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
+                                            setIsInChessMate(true)
+                                            crazyCanThree = false;
+                                            setTimeout(() => {
+                                                theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
+                                            }, 100);
+                                        } else {
+                                            //("le roi n'est pas en danger")
+                                            crazyCanThree = false;
+                                        }
+
+                                    } else {
+                                        crazyCanThree = false;
+                                        //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    for (let index = kingX - 2; index >= 0; index--) {
+                        if (crazyCanFour) {
+                            varKingYFour += 1
+                            const theLineWhereTheKingIs = document.getElementById(`lnh${varKingYFour}`)
+
+                            if (theLineWhereTheKingIs && theLineWhereTheKingIs.children[0] && theLineWhereTheKingIs.children[0].children[index]) {
+                                //(theLineWhereTheKingIs.children[0].children[index]);
+                                //(theLineWhereTheKingIs.children[0].children[index])
+                                //si il y'a une piece
+                                if (theLineWhereTheKingIs.children[0].children[index].children[0] && theLineWhereTheKingIs.children[0].children[index].children[0].children[0]) {
+                                    //(theLineWhereTheKingIs.children[0].children[index].children[0].children[0])
+
+                                    //verifie si la couleur de la piece est diffirente de celle du roi
+                                    if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+                                        //si la target n'est pas entre le roi et la piece dangeureuse
+                                        //(theLineWhereTheKingIs.children[0].children[index])
+                                        //(realTarget)
+
+                                        //("mais la comme meme tout va bien")
+                                        //on verifie si la piece est un fou ou une reine
+                                        if (theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "crazy" || theLineWhereTheKingIs.children[0].children[index].children[0].children[0].classList[1] === "queen") {
+                                            setIsInChessMate(true)
+                                            crazyCanFour = false;
+                                            //("le roi est en echec youpi (enfin je crois)")
+                                            setTimeout(() => {
+                                                theLineWhereTheKingIs.children[0].children[index].classList.add("magicBorderRedSpe")
+                                            }, 100);
+                                        } else {
+                                            //("le roi n'est pas en danger")
+                                            crazyCanFour = false;
+                                        }
+
+
+                                    } else {
+                                        //("ce n'est pas le pion selectioné mais la piece est de meme couleur que le roi concerné")
+                                        crazyCanFour = false;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+                //detection d'eventuels reine ou chateaux dangereux
+                if(true){
+                    //detections d'eventuels chateaux ou reine dangereux.se
+
+                        let castleCanOne = true;
+                        let castleCanTwo = true;
+                        let castleCanThree = true;
+                        let castleCanFour = true;
+
+                        const realKing = king.parentElement.parentElement
+
+                        for (let index = kingY + 1; index <= 8; index++) {
+                            const thePotPiece = document.getElementById(`lnh${index}`).children[0].children[kingX - 1]
+
+                            //si la piece a réelement une piece 
+                            if (castleCanOne && thePotPiece.children[0].children[0]) {
+                                //si elle a une couleur difirente
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
+                                        //si la destination est safe
+
+                                        const castleY = thePotPiece.id.split("")[2];
+                                        const realKingY = realKing.id.split("")[2];
+                                        const realTargetY = realTarget.id.split("")[2];
+
+                                        if (Math.floor(realTarget.id.split("")[3]) === kingX && (realTargetY < castleY && realTargetY > realKingY)) {
+                                            castleCanOne = false;
+                                        } else {
+                                            castleCanOne = false;
+
+                                            setIsInChessMate(true)
+                                            console.log("un chateaux check mate");
+                                            setTimeout(() => {
+                                                thePotPiece.classList.add("magicBorderRedSpe")
+                                            }, 100);
+                                        }
+                                    } else {
+                                        castleCanOne = false;
+                                    }
+                                } else {
+                                    //si c'est le pion selectioné
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
+                                        //("c'est le pion selectioné donc...")
+                                    } else {
+                                        castleCanOne = false;
+                                    }
+
+                                }
+                            }
+                        }
+                        for (let index = kingY - 1; index > 0; index--) {
+                            const thePotPiece = document.getElementById(`lnh${index}`).children[0].children[kingX - 1]
+
+                            //si la piece a réelement une piece 
+                            if (castleCanTwo && thePotPiece.children[0].children[0]) {
+                                //si elle a une couleur difirente
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
+                                        //si la destination est safe
+                                        const castleY = thePotPiece.id.split("")[2];
+                                        const realKingY = realKing.id.split("")[2];
+                                        const realTargetY = realTarget.id.split("")[2];
+
+                                        if (Math.floor(realTarget.id.split("")[3]) === kingX && (realTargetY > castleY && realTargetY < realKingY)) {
+                                            //("ca va alors")
+                                            castleCanTwo = false;
+                                        } else {
+                                            castleCanTwo = false;
+
+                                            setIsInChessMate(true)
+                                            console.log("un chateaux check mate");
+                                            setTimeout(() => {
+                                                thePotPiece.classList.add("magicBorderRedSpe")
+                                            }, 100);
+                                        }
+                                    } else {
+                                        castleCanTwo = false;
+                                    }
+                                } else {
+                                    //si c'est le pion selectioné
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
+                                        //("c'est le pion selectioné donc...")
+                                    } else {
+                                        castleCanTwo = false;
+                                    }
+
+                                }
+                            }
+                        }
+                        for (let index = kingX; index < 8; index++) {
+                            const thePotPiece = document.getElementById(`lnh${kingY}`).children[0].children[index]
+
+                            //si la piece a réelement une piece 
+                            if (castleCanThree && thePotPiece.children[0].children[0]) {
+                                //si elle a une couleur difirente
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
+                                        //si la destination est safe
+                                        const castleX = thePotPiece.id.split("")[3];
+                                        const realKingX = realKing.id.split("")[3];
+                                        const realTargetX = realTarget.id.split("")[3];
+
+                                        if (Math.floor(realTarget.id.split("")[2]) === kingY && (realTargetX < castleX && realTargetX > realKingX)) {
+                                            //("ca va alors")
+                                            castleCanThree = false;
+                                        } else {
+                                            castleCanThree = false;
+                                        
+                                            setIsInChessMate(true)
+                                            console.log("un chateaux check mate");
+                                            setTimeout(() => {
+                                                thePotPiece.classList.add("magicBorderRedSpe")
+                                            }, 100);
+                                        }
+                                    } else {
+                                        castleCanThree = false;
+                                    }
+                                } else {
+                                    //si c'est le pion selectioné
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
+                                        //("c'est le pion selectioné donc...")
+                                    } else {
+                                        castleCanThree = false;
+                                    }
+                                }
+                            }
+                        }
+                        for (let index = kingX - 2; index >= 0; index--) {
+                            const thePotPiece = document.getElementById(`lnh${kingY}`).children[0].children[index]
+
+                            //si la piece a réelement une piece 
+                            if (castleCanFour && thePotPiece.children[0].children[0]) {
+                                //si elle a une couleur difirente
+                                if (thePotPiece.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+
+                                    //si c'est le chateaux ou la reine
+                                    if (thePotPiece.children[0].children[0].classList[1] === "castle" || thePotPiece.children[0].children[0].classList[1] === "queen") {
+                                        //si la destination est safe
+                                        const castleX = thePotPiece.id.split("")[3];
+                                        const realKingX = realKing.id.split("")[3];
+                                        const realTargetX = realTarget.id.split("")[3];
+                                        if (Math.floor(realTarget.id.split("")[2]) === kingY && (realTargetX > castleX && realTargetX < realKingX)) {
+                                            //("ca va alors")
+                                            castleCanFour = false;
+                                        } else {
+                                            castleCanFour = false;
+                                            
+                                            setIsInChessMate(true)
+                                            console.log("un chateaux check mate");
+                                            setTimeout(() => {
+                                                thePotPiece.classList.add("magicBorderRedSpe")
+                                            }, 100);
+                                        }
+                                    } else {
+                                        castleCanFour = false;
+                                    }
+                                } else {
+                                    //si c'est le pion selectioné
+                                    if (thePotPiece.id + "" === ThePionSelected.id + "") {
+                                        //("c'est le pion selectioné donc...")
+                                    } else {
+                                        castleCanFour = false;
+                                    }
+                                }
+                            }
+                        }
+                }
+                //detectop, d'eventuels rider dangereux
+                if(true){
+                    const realKing = king.parentElement.parentElement;
+
+                    const number = kingY
+                    const baseOne = document.getElementById(`lnh${number-1}`)
+                    const baseTwo = document.getElementById(`lnh${number-2}`)
+                    const baseThree = document.getElementById(`lnh${number+1}`)
+                    const baseFour = document.getElementById(`lnh${number+2}`)
+
+                    //(number)
+                    const potontialElemBorderOne = baseOne && baseOne.children[0].children[Math.floor(realKing.id.split("")[3]) - 3]
+                    const potontialElemBorderTwo = baseOne && baseOne.children[0].children[Math.floor(realKing.id.split("")[3]) + 1]
+                    const potontialElemBorderThree = baseTwo && baseTwo.children[0].children[Math.floor(realKing.id.split("")[3])]
+                    const potontialElemBorderFour = baseTwo && baseTwo.children[0].children[Math.floor(realKing.id.split("")[3]) - 2]
+                    const potontialElemBorderFive = baseThree && baseThree.children[0].children[Math.floor(realKing.id.split("")[3]) - 3]
+                    const potontialElemBorderSix = baseThree && baseThree.children[0].children[Math.floor(realKing.id.split("")[3]) + 1]
+                    const potontialElemBorderSeven = baseFour && baseFour.children[0].children[Math.floor(realKing.id.split("")[3])]
+                    const potontialElemBorderEight = baseFour && baseFour.children[0].children[Math.floor(realKing.id.split("")[3]) - 2]
+
+                    const AllPotontialElemBorder = [potontialElemBorderOne, potontialElemBorderTwo, potontialElemBorderThree, potontialElemBorderFour, potontialElemBorderFive, potontialElemBorderSix, potontialElemBorderSeven, potontialElemBorderEight]
+
+
+                    AllPotontialElemBorder.forEach(peb => {
+                        //(peb)
+                        if (peb) {
+                            //si y'a une piece a l'interieur
+                            if (peb.children[0].children[0]) {
+                                //si elle est de la meme couleur que l'actuel roi
+                                if (peb.children[0].children[0].classList[2] + "" !== king.classList[2] + "") {
+                                    //si c'est un rider
+                                    if (peb.children[0].children[0].classList[1] === "rider") {
+                                        console.log("jusqu'ici tout va bien")
+                                        setIsInChessMate(true)
+                                        console.log("cool chess mate")
+                                        setTimeout(() => {
+                                            peb.classList.add("magicBorderRedSpe")
+                                        }, 100);
+                                    }
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        })
+       
+
+
+
     }
     const onMouseOver = e => {
         const allUnhoverable = document.querySelectorAll(".unhoverable")

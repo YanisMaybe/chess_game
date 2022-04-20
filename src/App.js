@@ -3,11 +3,9 @@ import React, {
   useState
 } from "react";
 import LineHeight from './components/LineHeight';
-import OneBox from "./components/OneBox";
-import ReactDOM from "react-dom";
 
 const App = () => {
-  const [lists, setLists] = useState(["1", "2", "3", "4", "5", "6", "7", "8"]);
+  const [lists] = useState(["1", "2", "3", "4", "5", "6", "7", "8"]);
 
   const [ThePionSelected, setThePionSelected] = useState({})
   const [MagicBordersPosibility, setMagicBordersPosibility] = useState([])
@@ -16,6 +14,8 @@ const App = () => {
 
   const [blackPackage,setBlackPackage] = useState([]);
   const [whitePackage,setwhitePackage] = useState([])
+
+  const [IsInChessmate,setIsInChessMate] = useState(false)
 
   useEffect(() => {
     if (ThePionSelected.id) {
@@ -80,6 +80,7 @@ const App = () => {
                     //(base.children[0].children[index].children[0].children[0])
                     if(base.children[0].children[index].children[0].children[0]&&base.children[0].children[index].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                       base.children[0].children[index].classList.add("magicBorderRed")
+                      base.children[0].children[index].children[0].children[0].children[0].classList.add("magicBorderRedSpe")
                     }
                
                   }
@@ -185,6 +186,7 @@ const App = () => {
             }else{
               if(potEl.children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                 potEl.classList.add("magicBorderRed")
+                potEl.children[0].children[0].children[0].classList.add("magicBorderRedSpe")
               }
             }
           }
@@ -214,6 +216,7 @@ const App = () => {
             //(allBases[index].children[0].children[pionRangementX-1].children[0])
             if(allBases[index].children[0].children[pionRangementX-1].children[0].children[0]&&allBases[index].children[0].children[pionRangementX-1].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
               allBases[index].children[0].children[pionRangementX-1].classList.add("magicBorderRed")
+              allBases[index].children[0].children[pionRangementX-1].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
               iCan = false;
             }
             if(!allBases[index].children[0].children[pionRangementX-1].children[0].children[0]){
@@ -230,6 +233,7 @@ const App = () => {
             }else{
               if(allBases[index].children[0].children[pionRangementX-1].children[0].children[0]&&allBases[index].children[0].children[pionRangementX-1].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                 allBases[index].children[0].children[pionRangementX-1].classList.add("magicBorderRed")
+                allBases[index].children[0].children[pionRangementX-1].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
               }
               iCanTwo = false
             }
@@ -242,6 +246,7 @@ const App = () => {
             }else{
               if(allBases[mineYSofisticatedToHigh].children[0].children[index].children[0].children[0]&&allBases[mineYSofisticatedToHigh].children[0].children[index].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                 allBases[mineYSofisticatedToHigh].children[0].children[index].classList.add("magicBorderRed")
+                allBases[mineYSofisticatedToHigh].children[0].children[index].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
               }
               iCanThree = false;
             }
@@ -252,9 +257,9 @@ const App = () => {
             if(!allBases[mineYSofisticatedToHigh].children[0].children[index].children[0].children[0]){
               allBases[mineYSofisticatedToHigh].children[0].children[index].classList.add("magicBorder")
             }else{
-              //(allBases[mineYSofisticatedToHigh].children[0].children[index].children[0].children[0])
               if(allBases[mineYSofisticatedToHigh].children[0].children[index].children[0].children[0]&&allBases[mineYSofisticatedToHigh].children[0].children[index].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                 allBases[mineYSofisticatedToHigh].children[0].children[index].classList.add("magicBorderRed")
+           //     allBases[index].children[0].children[mineYSofisticatedToHigh].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
               }
               iCanFour = false
            
@@ -294,6 +299,7 @@ const App = () => {
               //()
               if(allBases[index].children[0].children[marge].children[0].children[0]&&allBases[index].children[0].children[marge].children[0].children[0].classList[2]+""!==ThePionSelected.color+''){
                 allBases[index].children[0].children[marge].classList.add("magicBorderRed")
+                allBases[index].children[0].children[marge].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
                 canOne = false
               }
               else{
@@ -311,6 +317,7 @@ const App = () => {
               canTwo = false;
               if(allBases[index].children[0].children[margeTwo].children[0].children[0]&&allBases[index].children[0].children[margeTwo].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                 allBases[index].children[0].children[margeTwo].classList.add("magicBorderRed")
+                allBases[index].children[0].children[margeTwo].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
               }
             }
            
@@ -326,6 +333,7 @@ const App = () => {
               canThree = false
               if(allBases[index].children[0].children[margeThree].children[0].children[0]&&allBases[index].children[0].children[margeThree].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                 allBases[index].children[0].children[margeThree].classList.add("magicBorderRed")
+                allBases[index].children[0].children[margeThree].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
               }
             }
           }
@@ -342,6 +350,7 @@ const App = () => {
               canFour = false;
               if(allBases[index].children[0].children[margeFour].children[0].children[0]&&allBases[index].children[0].children[margeFour].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                 allBases[index].children[0].children[margeFour].classList.add("magicBorderRed")
+                allBases[index].children[0].children[margeFour].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
               }
             }
             
@@ -364,8 +373,6 @@ const App = () => {
         let canWe = true
         if(canWe){
           allBases.forEach(base=>{
-            //("king pos x:" + mineX + "   and actual base x pos:")
-            //(base.children[0].children[0])
             for (let index = 0; index < 8; index++) {
               if(base.children[0].children[index]&&Math.floor(ThePionSelected.id.split("")[2])-Math.floor(base.children[0].children[index].id.split("")[2])<=1&&Math.floor(ThePionSelected.id.split("")[2])-Math.floor(base.children[0].children[index].id.split("")[2])>=-1){
                 if(Math.floor(ThePionSelected.id.split("")[3])-Math.floor(base.children[0].children[index].id.split("")[3])<=1&&Math.floor(ThePionSelected.id.split("")[3])-Math.floor(base.children[0].children[index].id.split("")[3])>=-1){
@@ -376,6 +383,7 @@ const App = () => {
                     canWe = false
                     if(base.children[0].children[index].children[0].children[0].classList[2]+""!==ThePionSelected.color+""){
                       base.children[0].children[index].classList.add("magicBorderRed")
+                      base.children[0].children[index].children[0].children[0].children[0].classList.add("magicBorderRedSpeHoverable")
                     }
                   }
                 }
@@ -383,9 +391,6 @@ const App = () => {
             }
           })
         }
-        
-      }
-      if(ThePionSelected.type === "queen"){
         
       }
 
@@ -410,13 +415,24 @@ const App = () => {
         <div id="bgImageYN"></div>
         <div id="bgBlackYN"></div>
         <div className="containerOfALL">
-          <div className="ourBOXS">
-            {
-                lists.map((a,n)=>{
-                  return <LineHeight whitePackage = {whitePackage} blackPackage = {blackPackage} setwhitePackage = {setwhitePackage} setBlackPackage = {setBlackPackage}  colorTurn = {colorTurn} setColorTurn = {setColorTurn} setMagicBordersPosibility = {setMagicBordersPosibility} ThePionSelected = {ThePionSelected} setThePionSelected = {setThePionSelected} index = {n}/>
-                })
-            }
-            
+          <div className="boxsAndText">
+            <div className="ourBOXS">
+              {
+                  lists.map((a,n)=>{
+                    return <LineHeight setIsInChessMate = {setIsInChessMate} whitePackage = {whitePackage} blackPackage = {blackPackage} setwhitePackage = {setwhitePackage} setBlackPackage = {setBlackPackage}  colorTurn = {colorTurn} setColorTurn = {setColorTurn} setMagicBordersPosibility = {setMagicBordersPosibility} ThePionSelected = {ThePionSelected} setThePionSelected = {setThePionSelected} index = {n}/>
+                  })
+              }
+              <div id="Checkmat235e" className={`${!IsInChessmate?"none":""}`}>
+                <h2>Checkmate !</h2>
+              </div>
+              
+            </div>
+            <div className="presentation">
+              <div className="containerOfThisEndier">
+                  <p>this web app is a little chess game made by a great developer called yanis kerrouche (his twitter <a target="_blank" href="https://twitter.com/Yaniskerrouche1">here</a>)</p>
+                  <p>of course it's a game played locally, if you don't have any friends to play with click <a target="_blank" href="https://www.youtube.com/watch?v=9M2Ce50Hle8">here</a></p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

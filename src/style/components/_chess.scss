@@ -1,46 +1,72 @@
 .theDaron > .containerOfALL {
     height: 100vh;
-    > .ourBOXS {
-        border: 1px solid #787168;
-        border-radius: 6px;
-        max-width: 480px;
-        max-height: 480px;
-
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        > .oneLineHeight {
-            .containerOfLnh {
-                display: flex;
-                align-items: center;
-
-                .oneBox {
-                    width: 60px;
-                    height: 60px;
-
-                    .containerOfOb{
-                        width: 100%;
-                        height: 100%;
-
-                        .onePiece{
+    .boxsAndText{
+        .presentation{
+            width: 21%;
+            max-height: 30vh;
+            color: white;
+            position: absolute;
+            transform: translateY(-50%);
+            top: 50%;
+            font-size: 0.9em;
+            filter: blur(0.5px);
+            margin-left: 5px;
+            opacity: 0.75;
+        }
+        > .ourBOXS {
+            border: 1px solid #787168;
+            border-radius: 6px;
+            max-width: 480px;
+            max-height: 480px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(0.5px);
+            > .oneLineHeight {
+                .containerOfLnh {
+                    display: flex;
+                    align-items: center;
+    
+                    .oneBox {
+                        width: 60px;
+                        height: 60px;
+    
+                        .containerOfOb{
                             width: 100%;
                             height: 100%;
-
-                            img{
+    
+                            .onePiece{
                                 width: 100%;
                                 height: 100%;
-                            }
-                            .reduceScale{
-                                transform: scale(0.9);
-                            }
-                            &:hover{
-                                cursor: pointer;
+    
+                                img{
+                                    width: 100%;
+                                    height: 100%;
+                                }
+                                .reduceScale{
+                                    transform: scale(0.9);
+                                }
+                                &:hover{
+                                    cursor: pointer;
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+    
+}
+@media screen and(max-width:873px){
+    .theDaron > .containerOfALL .presentation{
+        display: none;
+    }
+}
+@media screen and(max-width:534px){
+    .theDaron > .containerOfALL .boxsAndText > .ourBOXS{
+        transform: translate(-50%, -50%) scale(0.68);
+        filter: blur(0);
     }
 }
